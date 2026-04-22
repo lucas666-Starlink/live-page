@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>直播入口</title>
+  <title>直播观看</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     body {
       margin: 0;
@@ -15,40 +16,52 @@
     .wrap {
       max-width: 900px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 20px;
     }
     h1 {
-      font-size: 28px;
-      margin-bottom: 16px;
+      font-size: 24px;
+      margin-bottom: 20px;
     }
-    .sub {
-      color: #bbb;
-      margin-bottom: 30px;
-      font-size: 15px;
-    }
-    .btn {
-      display: inline-block;
-      padding: 14px 28px;
+    video {
+      width: 100%;
+      max-width: 900px;
+      background: #000;
       border-radius: 10px;
-      background: #2d7ef7;
-      color: #fff;
-      text-decoration: none;
-      font-size: 18px;
     }
     .tip {
-      color: #999;
-      margin-top: 20px;
+      color: #bbb;
+      margin-top: 16px;
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>直播入口</h1>
-    <div class="sub">点击下方按钮进入观看</div>
-    <a class="btn" href="http://b6i.cn/2mTeGA" target="_blank" rel="noopener noreferrer">点击进入观看</a>
-    <div class="tip">若无法打开，说明该入口当前不支持浏览器直接访问。</div>
+    <h1>直播观看</h1>
+    <video id="video" controls autoplay playsinline webkit-playsinline></video>
+    <div class="tip">
+      若无法播放，请检查直播源是否可用。
+    </div>
   </div>
+
+  <script>
+    const video = document.getElementById('video');
+
+    const videoSrc = 'http://feijing-xzbforanchor.52kq.top/live/202_4928926_2.m3u8';
+
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
+    } else if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.play().catch(() => {});
+      });
+    } else {
+      alert('当前设备不支持播放该直播流');
+    }
+  </script>
 </body>
 </html>
